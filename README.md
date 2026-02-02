@@ -2,7 +2,7 @@
 
 Restored 1980s maze/puzzle game for the Commodore C16/Plus4. Recovered from original floppy disks and rebuilt with modern tooling.
 
-![Dorks Dilemma Title Screen](https://github.com/anthonyjclarke/Dorks_Dilemma_v2/blob/main/docs/title_screen.png)
+![Dorks Dilemma Title Screen](images/Dorks%20Dilemma%20Home%20Screen.png)
 
 ## About
 
