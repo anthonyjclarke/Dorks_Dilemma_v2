@@ -1,0 +1,154 @@
+; >s:joystik
+; put "joystik"
+;
+;*******************
+;
+; read the joystick
+;
+;*******************
+;
+;
+readjs
+;
+; first try port 2
+;
+lda joysel
+bne wakeup
+;
+jmp reakey
+;
+wakeup
+;
+lda #$00
+sta $dc02
+;
+lda prta   ;* port a
+eor #$ff
+and #$1f
+bne naye
+;
+; then try port 1
+;
+lda #$00
+sta $dc03
+;
+lda prtb   ;* port b
+eor #$ff
+and #$1f
+bne naye
+;
+; no move-ment
+;
+nomove
+;
+lda #0
+ldx #5
+;
+nom1
+;
+sta jleft,x
+dex
+bpl nom1
+;
+rts
+;
+naye
+;
+ror a
+ror jup
+;
+ror a
+ror jdown
+;
+ror a
+ror jleft
+;
+ror a
+ror jright
+;
+ror a
+;
+ror jfire
+;
+lda #1
+sta jmove
+;
+rts
+;
+;-------------------------
+;
+reakey
+;
+lda #4
+sta irqwrk
+;
+ldx #$ff
+stx $dc02
+;
+inx
+stx $dc03
+stx jmove
+;
+readk1
+;
+ldx irqwrk
+;
+lda bitdat,x
+ldy latdat,x
+;
+jsr keyit
+;
+php
+;
+ror jleft,x
+;
+plp
+ror jmove
+;
+dec irqwrk
+bpl readk1
+;
+lda jmove
+bne hitmet
+;
+jmp nomove
+;
+hitmet
+;
+rts
+;
+;--------------------------------
+;
+keyit
+;
+sty $dc00
+;
+nop
+nop
+;
+bit $dc01
+;
+bne clred
+;
+sec
+;
+rts
+;
+clred
+;
+clc
+;
+rts
+;
+;------------
+;
+defval .byte 'zx;/',$8e
+;
+latdat .byte $fd,$fb,$bf,$bf,$7f
+;
+bitdat .byte $10,$80,$04,$80,$10
+;
+;
+; defaults = z,x,;,/,space
+;
+.end

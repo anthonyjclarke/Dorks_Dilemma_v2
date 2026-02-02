@@ -1,0 +1,182 @@
+; >s:utils
+; put "utils"
+;
+;**************************
+;
+;        utilities
+;
+;**************************
+;
+random
+;
+lda ted
+and rnd+2
+adc ted
+asl a
+asl a
+rol rnd+3
+rol rnd+2
+rol rnd+1
+rol rnd
+;
+; ^ acornsoft rnd#
+;
+clc
+ldy #$29
+ldx #$fc
+;
+ranlop
+;
+tya
+ldy rnd+4,x
+adc rnd+4,x
+sta rnd+4,x
+inx
+bne ranlop
+;
+rts
+;
+;******************************
+;
+delay
+;
+ldx #$20
+;
+ldy #$00
+;
+dellop
+;
+nop
+nop
+nop
+;
+dey
+bne dellop
+;
+dex
+bne dellop
+;
+rts
+;
+;*****************************
+;
+clvars
+;
+lda #$00
+ldx #$07
+;
+cllop
+;
+sta $00,x
+;
+inx
+bne cllop
+;
+rts
+;
+;****************************
+;
+clswin
+;
+; clear the game play window
+;
+;
+lda #22
+sta cly
+;
+clrit1
+;
+ldx #0
+ldy cly
+jsr xy
+;
+ldy #30
+;
+clrit2
+;
+lda #196
+sta (sl),y
+;
+lda #1
+sta (cl),y  ;* colour
+;
+dey
+bne clrit2
+;
+dec cly
+bne clrit1
+;
+rts
+;
+;------------------------------
+;
+xy
+;
+cpy #0
+bpl yooke
+;
+ldy #0
+;
+yooke
+;
+; if y<0 then y=0 !!
+;
+tya
+asl a
+tay
+;
+lda scrpos,y
+sta sl
+lda scrpos+1,y
+sta sl+1
+;
+txa
+clc
+adc sl
+sta sl
+sta cl
+;
+lda sl+1
+adc #0
+sta sl+1
+;
+clc
+adc #$d4
+sta cl+1
+;
+rts
+;
+scrpos
+;
+.word $400,$428,$450,$478,$4a0
+.word $4c8,$4f0,$518,$540,$568
+.word $590,$5b8,$5e0,$608,$630
+.word $658,$680,$6a8,$6d0,$6f8
+.word $720,$748,$770,$798,$7c0
+;
+;
+;-----------------------------
+;
+; copy bomb char (used and
+; required several times -
+; subroutine !!!
+;
+copybm
+;
+ldx #31
+;
+gti205
+;
+lda $27a0,x
+sta $2160,x
+;
+dex
+bpl gti205 ;* soon !
+;
+rts
+;
+;
+;
+;
+;
+.end

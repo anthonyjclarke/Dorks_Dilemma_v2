@@ -1,0 +1,130 @@
+; >s:radar-scanner
+; put "radar-scanner"
+;
+radar
+;
+; one call to print/update the
+; radar scanner
+;
+ldy #7
+lda #255
+;
+wal1
+;
+sta $2650,y
+;
+dey
+bpl wal1
+;
+; radar char cleared
+;
+ldx manx
+inx
+txa
+;
+lsr a
+lsr a
+;
+; /4
+;
+tay
+lda bbts,y
+;
+pha
+;
+; ldx many
+; ldy lookup,x
+;
+lda many
+lsr a
+lsr a
+;
+tay       ;* rustic / 3
+iny
+;
+pla
+;
+sta $2650,y
+;
+; ldx #24
+;
+; wal2
+;
+; lda #201
+; sta radbuf,x
+;
+; dex
+; bpl wal2
+;
+; ldy ypos
+; lda time5,y
+; clc
+; adc xpos
+; tay
+;
+; ldy screen
+;
+; lda #202
+; sta radbuf,y
+;
+; now lets print it
+;
+ldx #24
+;
+wal3
+;
+; lda radbuf,x
+ldy rady,x
+;
+lda #201
+;
+cpx screen
+bne yhtfs
+;
+lda #202
+;
+yhtfs
+;
+sta $ef2-$800,y  ;* onto screen
+;
+cmp #201
+beq ods
+;
+lda #$41
+bne osd
+;
+ods
+;
+lda #$66
+;
+osd
+;
+sta $ef2-$800+$d400,y  ;* do the colour
+;
+dex
+bpl wal3
+;
+rts
+;
+;
+bbts
+;
+.byte $7f,$bf,$df,$ef
+.byte $f7,$fb,$fd,$fe
+;
+lookup
+;
+; .byte 0,0,0,1,1,1,2,2,2
+; .byte 3,3,3,4,4,4,5,5,5
+; .byte 6,6,6,7,7,7,8,8,8
+;
+rady
+;
+.byte 0,1,2,3,4
+.byte 40,41,42,43,44
+.byte 80,81,82,83,84
+.byte 120,121,122,123,124
+.byte 160,161,162,163,164
+;
+;
+.end

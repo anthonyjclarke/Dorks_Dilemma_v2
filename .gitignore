@@ -1,0 +1,6 @@
+.DS_Store
+
+# Build artifacts (intermediate files only)
+build/*.o
+build/*.map
+build/*.lst

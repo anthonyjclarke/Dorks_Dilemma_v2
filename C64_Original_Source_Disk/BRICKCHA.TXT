@@ -1,0 +1,30 @@
+; >s:brick-chars
+; put"brick-chars"
+;
+brik1
+;
+.byte $5a,$fa,$fa,$f5,$5f,$af,$af,$a5
+.byte $aa,$5a,$f5,$ff,$ff,$5f,$a5,$aa
+.byte $aa,$a5,$5f,$ff,$ff,$f5,$5a,$aa
+.byte $a5,$af,$af,$5f,$f5,$fa,$fa,$5a
+;
+;---------------------------------
+;
+brik2
+;
+.byte $28,$7d,$7d,$be,$be,$7d,$7d,$28
+.byte $24,$bd,$7e,$7e,$bd,$bd,$7e,$18
+.byte $14,$be,$be,$7d,$7d,$be,$be,$14
+.byte $18,$7e,$bd,$bd,$7e,$7e,$bd,$24
+;
+;---------------------------------
+;
+brik3
+;
+.byte $14,$69,$69,$69,$69,$69,$69,$14
+.byte $3c,$d7,$69,$69,$69,$69,$d7,$3c
+.byte $3c,$ff,$d7,$69,$69,$d7,$ff,$3c
+.byte $3c,$ff,$ff,$d7,$d7,$ff,$ff,$3c
+;
+;
+.end

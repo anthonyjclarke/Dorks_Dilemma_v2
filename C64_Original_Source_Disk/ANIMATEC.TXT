@@ -1,0 +1,283 @@
+; >s:animate-chars
+; put "animate-chars"
+;
+; animate chars for mega-
+; gloppiness.
+;
+animat
+;
+jsr aniexp   ;* explosion char
+;
+lda stpman   ;* stop man ani ?
+bne droyt
+;
+jsr manglp   ;* animate man
+;
+droyt
+;
+jsr aliani   ;* alien animation
+;
+dec anitem
+beq fgre
+;
+rts
+;
+fgre
+;
+lda #7
+sta anitem
+;
+ldx bdcnt  ;* border char count
+inx
+cpx #6
+;
+bne ntena
+;
+ldx #0
+;
+ntena
+;
+stx bdcnt
+;
+lda aniseq,x
+;
+asl a
+asl a
+asl a
+;
+tax
+;
+ldy #0
+;
+ani1
+;
+lda xdat,x
+sta $2658,y
+;
+lda ydat,x
+sta $2660,y
+;
+lda brik1,x
+sta $2638,y
+;
+lda brik2,x
+sta $2640,y
+;
+lda brik3,x
+sta $2630,y
+;
+inx
+iny
+cpy #8
+bne ani1
+;
+rts
+;
+;--------------------------------
+;
+aniexp
+;
+; explosion char data
+;
+ldx rnd+1
+;
+ldy #0
+;
+exp1
+;
+lda $e000,x ;* random data
+sta $27c0,y
+;
+inx
+iny
+cpy #8
+bne exp1
+;
+lda bombgo
+beq frout  ;* dont do it
+;
+ldx #31
+;
+dsar
+;
+lda $2160,x
+;
+eor rnd+1
+and $27a0,x
+;
+sta $2160,x
+;
+dex
+bpl dsar
+;
+; fizzle bomb during explosion
+;
+frout
+;
+rts
+;
+;-------------------------------
+;
+manglp
+;
+; comes here when stopped even
+; if for only a short time
+;
+lda keepon
+bne storp
+;
+ldx #0
+beq geetin ;* set norm char
+;
+storp
+;
+dec gloptm
+beq grunty
+;
+rts
+;
+grunty
+;
+lda #45
+sta gloptm
+;
+ldy mancnt ;* man anicount
+;
+; set up before here.
+;
+ldx tim32,y
+;
+; *32
+;
+geetin
+;
+ldy #0
+;
+frod
+;
+lda balman,x
+sta $20e0,y
+;
+inx
+iny
+cpy #32
+bne frod
+;
+ldx mancnt
+inx
+cpx #4
+bne face
+;
+ldx #2
+;
+face
+;
+stx mancnt
+;
+; animation goes :-
+;
+; 0,1,2,3,2,3,2,3,2,3,2,3
+;
+; good eh!!
+;
+rts
+;
+;********************************
+;
+aniseq .byte 0,1,2,3,2,1
+;
+xdat
+;
+; char data for horizontal border
+; character.
+;
+.byte $00,$00,$81,$ff,$ff,$81,$00,$00
+.byte $00,$00,$c3,$7e,$7e,$c3,$00,$00
+.byte $00,$00,$e7,$3c,$3c,$e7,$00,$00
+.byte $00,$00,$ff,$18,$18,$ff,$00,$00
+;
+ydat
+;
+; data as above but for vertical
+; character
+;
+.byte $3c,$18,$18,$18,$18,$18,$18,$3c
+.byte $24,$3c,$18,$18,$18,$18,$3c,$24
+.byte $24,$24,$3c,$18,$18,$3c,$24,$24
+.byte $24,$24,$24,$3c,$3c,$24,$24,$24
+;
+;----------------------------------
+;
+balman
+;
+.byte $00,$05,$17,$1f,$5f,$7f,$7f,$77
+.byte $00,$50,$94,$a4,$e5,$e9,$f9,$f9
+.byte $77,$77,$75,$7d,$5d,$1f,$17,$05
+.byte $f9,$f9,$f9,$e9,$e5,$a4,$94,$50
+;
+.byte $01,$17,$1b,$1d,$06,$17,$1f,$5f
+.byte $40,$d4,$e4,$74,$90,$94,$e4,$e5
+.byte $7f,$77,$75,$7d,$5f,$1f,$17,$05
+.byte $e9,$f9,$f9,$f9,$e5,$e4,$94,$50
+;
+.byte $05,$17,$1f,$1f,$1e,$1f,$07,$16
+.byte $50,$d0,$74,$fd,$fd,$a5,$d0,$94
+.byte $1f,$5f,$7f,$77,$5f,$1f,$17,$05
+.byte $e4,$e5,$f9,$f9,$e5,$e4,$94,$50
+;
+.byte $05,$07,$1d,$7f,$7f,$5a,$07,$16
+.byte $50,$d4,$f4,$f4,$b4,$f4,$d0,$94
+.byte $1f,$5f,$7f,$77,$5f,$1f,$17,$05
+.byte $e4,$e5,$f9,$f9,$e5,$e4,$94,$50
+;
+;
+;*****************
+;
+aliani
+;
+dec alycnt
+beq hug
+;
+rts
+;
+hug
+;
+lda #10
+sta alycnt
+;
+ldx deftem
+inx
+cpx #6
+bne blacks
+;
+ldx #0
+;
+blacks
+;
+stx deftem
+;
+lda aniseq,x ;* animation #
+tay
+ldx tim32,y
+;
+; pointer to char data in alibuf
+;
+ldy #0
+;
+comuni
+;
+lda alibuf,x
+sta $2688,y
+;
+inx
+iny
+cpy #32
+bne comuni
+;
+rts
+;
+;
+;
+;
+;
+.end

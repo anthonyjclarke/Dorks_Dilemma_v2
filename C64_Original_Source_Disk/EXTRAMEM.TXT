@@ -1,0 +1,64 @@
+; >s:extra-memory
+; put "extra-memory"
+;
+*=$0800
+;
+scrbuf
+;
+*=*+$400
+;
+; generate screen buffer
+;
+;-------------------------------
+;
+jignum
+;
+*=*+25
+;
+; what piece of jigsaw is in each
+; logical room
+;
+;--------------------------------
+;
+romnum
+;
+*=*+25
+;
+; what screen data is used to
+; generate the logical room
+;
+;--------------------------------
+;
+radbuf
+;
+*=*+25
+;
+; radar buffer
+;
+;--------------------------------
+;
+alibuf
+;
+*=*+128
+;
+; 2 alien animations
+;
+;--------------------------------
+;
+gotbit
+;
+*=*+25
+;
+; 0=not got this piece
+; 1=t'her
+;
+;-------------------------------
+;
+;
+;
+;
+;
+;
+;
+;
+.end

@@ -1,0 +1,49 @@
+; >s:command
+; put "command"
+;
+; check if you want to escape
+; from game,edit jigsaw etc.
+;
+;
+comand
+;
+jsr chkedt ;* escape to edit
+bne noedit
+;
+lda #1
+sta stop   ;* kill irq's
+;
+lda vol
+pha
+;
+lda #0
+sta vol
+;
+jsr edit
+;
+; lda #0
+; sta stop
+;
+dec stop
+;
+pla
+sta vol
+;
+noedit
+;
+rts
+;
+;-------------------------------
+;
+chkedt
+;
+; check status of escape
+;
+jsr inkey
+cmp #5          ;* 'e'
+;
+rts
+;
+;
+;
+.end

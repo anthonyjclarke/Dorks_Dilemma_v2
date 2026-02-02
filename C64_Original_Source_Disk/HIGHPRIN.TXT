@@ -1,0 +1,358 @@
+; >s:high-print
+; put "high-print"
+;
+;*********************************
+;
+; print high-score table + screen
+;
+;*********************************
+;
+prscrn
+;
+; print everything except the
+; high-score table
+;
+ldx #<bits
+ldy #>bits
+jsr pwint   ;* print bits
+;
+ldx #13
+lda #42
+;
+poops
+;
+sta $481+40,x
+;
+dex
+bpl poops
+;
+rts
+;
+;------------------------------
+;
+prhisc
+;
+; print high-score table
+;
+lda #0
+sta numb
+;
+hisc1
+;
+lda #0
+sta menatw
+;
+lda numb
+asl a
+clc
+adc #5
+sta ty
+;
+lda #6
+sta tx
+;
+lda numb
+clc
+adc #$31
+pha
+and #7
+ora #$70
+sta prcol
+pla
+;
+jsr dubhit ;* print d/h
+;
+inc tx
+inc tx
+;
+lda numb
+asl a
+asl a
+asl a
+asl a
+;
+tax
+;
+lda #5
+sta count
+;
+walt
+;
+txa
+pha
+;
+lda histbl,x
+;
+sta wall
+cmp #'0
+;
+bne foo2
+;
+lda menatw
+bne foo3
+;
+lda #32
+bne foo1
+;
+foo2
+;
+lda #1
+sta menatw
+;
+foo3
+;
+lda wall
+;
+foo1
+;
+jsr dubhit
+;
+pla
+tax
+;
+inx
+;
+inc tx
+dec count
+bpl walt
+;
+inc tx
+;
+lda #9
+sta count
+;
+wilt
+;
+txa
+pha
+;
+lda histbl,x
+;
+jsr dubhit   ;* print it
+;
+pla
+tax
+;
+inx
+;
+inc tx
+dec count
+bpl wilt
+;
+inc numb
+lda numb
+cmp #5
+bne hisc1
+;
+rts
+;
+ 
+;-----------------------------
+;
+pwint
+;
+; print the buffer pointed to
+; by the x,y
+;
+; table format =
+;
+; x,y,col,bytes,0
+;
+stx alter1+1
+stx alter2+1
+stx alter3+1
+stx alter4+1
+sty alter1+2
+sty alter2+2
+sty alter3+2
+sty alter4+2
+;
+; pointer
+;
+ldx #0
+;
+alter1
+;
+lda $ffff,x
+cmp #$ff
+;
+beq nztt    ;* end of table
+;
+sta tx      ;* temp x
+inx
+;
+alter2 lda $ffff,x
+sta ty      ;* temp y
+inx
+;
+txa
+pha
+;
+ldx tx
+ldy ty
+jsr xy      ;* to screen
+;
+pla
+tax
+;
+alter4 lda $ffff,x
+sta prcol
+;
+inx
+;
+ldy #0
+;
+alter3
+;
+lda $ffff,x
+beq nzt
+;
+sta (sl),y
+;
+lda prcol
+sta (cl),y
+;
+iny
+inx
+bne alter3
+;
+nzt
+;
+inx
+bne alter1
+;
+nztt
+;
+rts
+;
+;-----------------------------
+;
+bits
+;
+.byte 3,17,$66,3,$f,$e,$14,$12,$0f,$0c,0
+;
+; 'control'
+;
+.byte 5,18,$73,$3c,3,$3e,0
+;
+; '(c)'
+;
+.byte 5,20,$79,136,137,138,0
+.byte 5,21,$79,139,140,141,0
+;
+; k/j chars
+;
+.byte 14,17,$77,74,80,98,72,0
+.byte 14,18,$54,75,81,99,73,0
+;
+; fire
+; fire
+;
+.byte 15,19,$77,102,92,0
+.byte 15,20,$54,103,93,0
+;
+; to
+; to
+;
+.byte 14,21,$77,94,86,64,112,0
+.byte 14,22,$54,95,87,65,113,0
+;
+; play
+; play
+;
+.byte 24,17,$66,$13,$0f,$15,$0e,$04,0
+;
+; 'sound'
+;
+.byte 25,18,$63,$3c,19,$3e,0
+;
+; '(f2)'
+;
+.byte 25,20,$71,142,143,144,0
+.byte 25,21,$71,145,146,147,0
+;
+; quiet chars
+;
+;********
+;
+.byte 9,2,$67,70,92,98,84,100,32,32,70,80,86,72,88,88,64,0
+.byte 9,3,$47,71,93,99,85,101,32,32,71,81,87,73,89,89,65,0
+;
+; dorks  dilemma
+;
+;********
+;
+.byte $ff
+;
+; end of table
+;
+;
+;-------------------------------
+;
+; print 'acc' (asc) to double
+; height at x,y and colour prcol
+;
+dubhit
+;
+and #$3f
+;
+cmp #32
+bne ntspc
+;
+rts
+;
+ntspc
+;
+cmp #$30 ;* '0'
+bcc letter
+;
+and #$0f
+;
+asl a
+clc
+adc #116
+bne bypass
+;
+letter
+;
+asl a
+clc
+adc #62
+;
+bypass
+;
+pha
+;
+ldx tx
+ldy ty
+;
+jsr xy     ;* to screen
+;
+; jason now add the x value
+;
+pla
+;
+ldy #0
+sta (sl),y
+pha
+;
+lda prcol
+sta (cl),y
+;
+pla
+;
+clc
+adc #1
+ldy #40
+sta (sl),y
+;
+lda prcol
+and #$0f
+ora #$60
+sta (cl),y
+;
+rts
+;
+;
+;
+.end

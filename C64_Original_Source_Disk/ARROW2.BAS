@@ -1,0 +1,12 @@
+1000 .byte $5a,$fa,$fa,$f5,$5f,$af,$af,$a5
+1010 .byte $aa,$5a,$f5,$ff,$ff,$5f,$a5,$aa
+1020 .byte $aa,$a5,$5f,$ff,$ff,$f5,$5a,$aa
+1030 .byte $a5,$af,$af,$5f,$f5,$fa,$fa,$5a
+1040 .byte $28,$7d,$7d,$be,$be,$7d,$7d,$28
+1050 .byte $24,$bd,$7e,$7e,$bd,$bd,$7e,$18
+1060 .byte $14,$be,$be,$7d,$7d,$be,$be,$14
+1070 .byte $18,$7e,$bd,$bd,$7e,$7e,$bd,$24
+1080 .byte $14,$69,$69,$69,$69,$69,$69,$14
+1090 .byte $3c,$d7,$69,$69,$69,$69,$d7,$3c
+1100 .byte $3c,$ff,$d7,$69,$69,$d7,$ff,$3c
+1110 .byte $3c,$ff,$ff,$d7,$d7,$ff,$ff,$3c

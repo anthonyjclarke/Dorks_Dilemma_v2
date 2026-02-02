@@ -1,0 +1,73 @@
+; >s:inkey
+; put "inkey"
+;
+; a call to this routine
+; returns the acc. with :-
+;
+; 0     = no key pressed
+; 1-26  = a-z
+;
+; 27    = space
+; 28    = return
+; 29    = delete
+;
+inkey
+;
+ldx #$ff
+stx $dc02
+;
+inx
+stx $dc03
+;
+lda #0
+sta keyval
+;
+ink1
+;
+lda keyval
+asl a
+tax
+;
+inc keyval
+;
+lda inkdat,x
+tay
+;
+lda inkdat+1,x
+;
+jsr keyit      ;* check it
+;
+bcc noinky     ;* not pressed
+;
+lda keyval     ;* return with val
+;
+rts
+;
+noinky
+;
+lda keyval
+cmp #29
+bne ink1
+;
+lda #0
+;
+rts
+;
+;
+inkdat
+;
+.byte $fd,$04,$f7,$10,$fb,$10
+.byte $fb,$04,$fd,$40,$fb,$20
+.byte $f7,$04,$f7,$20,$ef,$02
+.byte $ef,$04,$ef,$20,$df,$04
+.byte $ef,$10,$ef,$80,$ef,$40
+.byte $df,$02,$7f,$40,$fb,$02
+.byte $fd,$20,$fb,$40,$f7,$40
+.byte $f7,$80
+.byte $fd,$02,$fb,$80,$f7,$02
+.byte $fd,$10
+.byte $7f,$10
+.byte $fe,$02,$fe,$01
+;
+;
+.end

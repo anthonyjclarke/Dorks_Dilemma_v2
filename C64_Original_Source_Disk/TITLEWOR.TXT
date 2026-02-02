@@ -1,0 +1,98 @@
+; >s:title-works
+; put "title-works"
+;
+; do the bits on the title page
+;
+bdrglp
+;
+; scroll the border round
+;
+lda $d81f
+sta stopa  ;* save it
+;
+lda $dbb7
+sta stopb
+;
+lda $db98
+sta stopc
+;
+; 3 bits saved
+;
+ldx #30
+;
+qat1
+;
+lda $d800,x
+sta $d801,x
+;
+dex
+bpl qat1
+;
+lda #22
+sta bordy
+;
+qat2
+;
+ldx #31
+ldy bordy
+jsr xy
+;
+ldy #0
+lda (cl),y
+;
+ldy #40
+sta (cl),y
+;
+dec bordy
+bne qat2
+;
+lda stopa
+sta $d847
+;
+ldx #0
+;
+qat3
+;
+lda $db99,x
+sta $db98,x
+;
+inx
+cpx #30
+bne qat3
+;
+lda stopb
+sta $dbb6
+;
+lda #0
+sta bordy
+;
+qat4
+;
+ldx #0
+ldy bordy
+jsr xy
+;
+ldy #40
+lda (cl),y
+;
+ldy #0
+sta (cl),y
+;
+inc bordy
+lda bordy
+cmp #23
+bne qat4
+;
+lda stopc
+sta $db70
+;
+rts
+;
+;
+;
+;
+;
+;
+;
+;
+.end

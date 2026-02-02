@@ -1,0 +1,305 @@
+; >s:work-high
+; put "work-high"
+;
+;*****************************
+;
+; do all the high score stuff
+;
+;*****************************
+;
+;
+;
+; sikbuf .byte '000000'
+;
+; sikbuf must be filled with
+; the score from the last game
+; before high routine is called
+;
+high
+;
+lda #0
+sta hispnt
+sta positn
+;
+hlp1
+;
+lda hispnt
+clc
+adc #6
+;
+tax
+;
+sec
+ldy #6
+;
+hlp2
+;
+lda histbl-1,x
+sbc sikbuf-1,y
+;
+dex
+dey
+bne hlp2
+;
+bcc itsin ;* got in !!!
+;
+lda hispnt
+clc
+adc #16
+sta hispnt
+;
+inc positn
+;
+lda positn
+cmp #5
+bne hlp1
+;
+; not in the table - sussed
+;
+rts
+;
+;********************************
+;
+itsin
+;
+; in at positn  (0-4)
+;
+jsr prentr   ;* print prompt
+jsr mvescr   ;* move scores down
+jsr clswin   ;* clear window
+;
+rts
+;
+;
+;********************************
+;
+; hofset
+;
+; .byte 0,16,32,48,64
+;
+mvescr
+;
+lda positn
+pha
+;
+; lda hofset,x
+;
+asl a
+asl a
+asl a
+asl a
+;
+; *16
+;
+sta incnt
+;
+pla
+cmp #4
+beq inlast
+;
+ldx #64
+;
+movesc
+;
+lda histbl,x
+sta histbl+16,x
+;
+dex
+cpx incnt
+;
+bne movesc
+;
+inlast
+;
+ldx incnt
+;
+ldy #0
+;
+mvt1
+;
+lda sikbuf,y
+sta histbl,x
+;
+inx
+iny
+;
+cpy #6
+bne mvt1
+;
+; score in
+;
+; now get name
+;
+ldx #10
+;
+let0
+;
+lda #32
+sta $6b3,x
+;
+lda #$51
+sta $da63,x
+;
+dex
+bpl let0
+;
+ldy #0
+;
+input
+;
+sty letcnt
+lda #37
+sta $6b3,y
+;
+ldx #$30
+jsr delay+2
+;
+input1
+;
+jsr inkey     ;* get key
+beq input1    ;* no key pressed
+;
+ldy letcnt
+;
+cmp #$1c      ;* return - exit
+beq letext
+;
+cmp #$1d
+bne let1
+;
+; pressed delete
+;
+cpy #0
+beq input     ;* at extreme left
+;
+lda #32
+sta $6b3,y    ;* rub out
+;
+dey
+jmp input     ;* go back
+;
+let1
+;
+cpy #10
+beq input     ;* no more !
+;
+cmp #$1b      ;* space
+bne let2
+;
+lda #32
+;
+let2
+;
+sta $6b3,y
+;
+iny
+;
+jmp input
+;
+letext
+;
+; exit - put name into table
+;
+lda incnt   ;* ofset into table
+clc
+adc #6
+tay
+;
+ldx #0
+;
+let4
+;
+lda $6b3,x
+cmp #37
+bne let5
+;
+lda #32
+;
+let5
+;
+sta histbl,y
+;
+iny
+inx
+cpx #10
+bne let4
+;
+rts
+;
+;
+;--------------------------------
+;
+prentr
+;
+; print the 'congratulations bit'
+;
+ldx #<text
+ldy #>text
+jsr pwint
+;
+ldx #15
+;
+quincy
+;
+lda #42     ;* under line char
+;
+sta $cd0-$800,x
+;
+cpx #10
+bcs quinc1
+;
+sta $edb-$800,x
+;
+quinc1
+;
+dex
+bpl quincy
+;
+ldx #5
+;
+quinc3
+;
+lda scorep,x
+sta $d29-$800,x
+;
+lda #1
+sta $d929,x
+;
+dex
+bpl quinc3
+;
+rts
+;
+;----------
+;
+text
+;
+.byte 8,3,$77,68,92,90,76,98,64,102,104,86,64,102,80,92,90,100,40,0
+.byte 8,4,$67,69,93,91,77,99,65,103,105,87,65,103,81,93,91,101,41,0
+;
+; 'congratulations'
+;
+.byte 3,7,$73,25,15,21,18,32,19,3,15,18,5,32,15,6,32,48,48,48,48,48,48
+.byte 32,9,19,32,9,14,0
+;
+; 'your score of 000000 is in'
+;
+.byte 10,9,$77,102,78,72,32,102,92,94,32,74,80,106,72,0
+.byte 10,10,$67,103,79,73,32,103,93,95,32,75,81,107,73,0
+;
+; 'the top five'
+;
+.byte 5,13,$73,94,86,72,64,100,72,32,72,90,102,72,98,32
+.byte 112,92,104,98,32,90,64,88,72,0
+.byte 5,14,$63,95,87,73,65,101,73,32,73,91,103,73,99,32
+.byte 113,93,105,99,32,91,65,89,73,0
+;
+;  'please enter your name'
+;
+.byte $ff
+;
+;
+;
+;
+;
+.end

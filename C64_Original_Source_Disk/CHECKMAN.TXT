@@ -1,0 +1,118 @@
+; >s:check-man
+; put "check-man"
+;
+; check mans pos.
+;
+;
+check
+;
+; called with x,y set up
+;
+jsr xy ;* convert to screen
+;
+ldx #3
+;
+rub1
+;
+ldy yval2,x
+lda (sl),y
+sta behind,x ;* save to buffer
+;
+cmp #197
+bcc ckok
+;
+cmp #244
+bcs ckok
+;
+lda #1
+sta hit
+;
+ckok
+;
+dex
+bpl rub1
+;
+rts
+;
+;----------------------------
+;
+manded
+;
+; called when the explosion
+; is on the screen to see if
+; the man died.
+;
+; *nb manl,manl+1 have been
+;     set up with the tl address
+;     of the man before the
+;     explosion started.
+;
+ldx #3
+;
+mnde2
+;
+ldy yval2,x
+lda (manl),y
+;
+cmp #248      ;* explosion char
+bne butds     ;* not died !
+;
+lda #1
+sta dead
+sta dedbmb ;* died by bomb
+;
+butds
+;
+dex
+bpl mnde2
+;
+rts
+;
+;--------------------
+;
+findtl
+;
+lda #22
+sta temp
+;
+finde1
+;
+ldx #0
+ldy temp
+jsr xy
+;
+ldy #30
+;
+finde2
+;
+lda (sl),y
+cmp #28
+bne nxtfnd
+;
+sty ty
+lda sl
+clc
+adc ty
+sta manl
+;
+lda sl+1
+adc #0
+sta manl+1
+;
+rts
+;
+nxtfnd
+;
+dey
+bne finde2
+;
+dec temp
+bne finde1
+;
+findno
+;
+inc border
+;
+jmp findno
+;
+.end

@@ -1,0 +1,83 @@
+; >s:game-over
+; put "game-over"
+;
+;
+; all the game over stuff
+;
+gmeovr
+;
+; do some gloppy bits then jmp
+; to the title page
+;
+; everything should have stopped
+; by now.
+;
+jsr clswin    ;* clear window
+;
+ldx #<ender
+ldy #>ender
+jsr pwint
+;
+lda #80
+sta temp
+ldy #0
+;
+endlop
+;
+ldx #10
+;
+lda rnd
+and #%11110111
+ora #%00110000
+;
+entit
+;
+sta $d9c2,x
+sta $d9c2+40,x
+;
+dex
+bpl entit
+;
+dey
+bne endlop
+;
+dec temp
+bne endlop
+;
+ldx #5
+;
+let9
+;
+lda scorep,x  ;* score address
+cmp #32       ;* a space ?
+bne let8
+;
+lda #$30      ;*
+;
+let8
+;
+sta sikbuf,x
+;
+dex
+bpl let9
+;
+; put score into buffer for high
+; and convert any spaces into '0'
+;
+jmp gloppy
+;
+;-------------------------------
+;
+ender
+;
+.byte 11,11,$71,76,64,88,72,32,32,92,106,72,98,0
+;
+.byte 11,12,$71,77,65,89,73,32,32,93,107,73,99,0
+;
+.byte $ff
+;
+;
+;
+;
+;
+.end

@@ -1,0 +1,201 @@
+; >s:vars
+; put "vars"
+;
+; all variables to be page zero
+;
+*=$02
+;
+mesl   *=*+2  ;* message pointer
+messx  *=*+1  ;* mess. pixel
+;
+lives  *=*+1  ;* # of lives
+xtra   *=*+1  ;* xtra life compare
+;
+jleft  *=*+1  ;* left
+jright *=*+1  ;* right
+jup    *=*+1  ;* up
+jdown  *=*+1  ;* down
+jfire  *=*+1  ;* fire
+jmove  *=*+1  ;* moved ?
+;
+intype *=*+1  ;* irq number
+irqwrk *=*+1  ;* temp var
+;
+rnd    *=*+4  ;* random number
+;
+tryoth *=*+1  ;* try other dir
+;
+sl     *=*+2  ;* screen pointer
+al     *=*+2  ;* ali scrn pointer
+work   *=*+4  ;* screen pointer
+xcount *=*+1  ;* x for decoder
+ycount *=*+1  ;* y for decoder
+screen *=*+1  ;* screen no# 0-24
+;
+xpos   *=*+1  ;* x in maze
+ypos   *=*+1  ;* y in maze
+;
+temp   *=*+1  ;* door temp
+;
+manx   *=*+1  ;* man x pos
+trx    *=*+1  ;* man temp x pos
+savex  *=*+1  ;* x pos
+many   *=*+1  ;* man y pos
+try    *=*+1  ;* man temp y pos
+savey  *=*+1  ;* y pos
+tx     *=*+1  ;* temp x pos
+ty     *=*+1  ;* temp y pos
+fire   *=*+1  ;* fire flag
+hit    *=*+1  ;* free to move ?
+;
+temman *=*+1  ;* man move tempo
+newrom *=*+1  ;* move to new room
+;
+stop   *=*+1  ;* stop everything
+;
+cl     *=*+2  ;* colour address
+;
+xpix   *=*+1  ;* man x pixel
+ypix   *=*+1  ;* man y pixel
+dir    *=*+1  ;* man direction
+rustic *=*+1  ;* flag
+char   *=*+1  ;* char on
+going  *=*+1  ;* moving ?
+;
+chkx   *=*+1  ;* check x pos
+chky   *=*+1  ;* check y pos
+temdir *=*+1  ;* temp dir
+;
+behind *=*+4  ;* behind char buff
+;
+dl     *=*+2  ;* pointer to buffer
+ol     *=*+2  ;* pointer to screen
+count  *=*+1  ;* number to copy
+copy   *=*+1  ;* char to copy
+colour *=*+1  ;* colour of char
+;
+alipos *=*+8  ;* alien x,y table
+irqprt *=*+8  ;* irq print table
+irqrub *=*+8  ;* irq clear table
+alitim *=*+4  ;* time to start
+move   *=*+1  ;* can move ?
+chekx  *=*+1  ;* try x dir
+cheky  *=*+1  ;* try y dir
+alitem *=*+1  ;* ali mve tempo
+alicnt *=*+1  ;* ali count
+alx    *=*+1  ;* ali x pos
+aly    *=*+1  ;* ali y pos
+prtals *=*+1  ;* print aliens ?
+point  *=*+1  ;* temp pointer
+alicol *=*+1  ;* colour
+;
+keyval *=*+1  ;* inkey val
+;
+bdcnt  *=*+1  ;* border ani cnt.
+anitem *=*+1  ;* animate tempo .
+;
+timer  *=*+1  ;* bomb timer
+bomsl  *=*+2  ;* bomb screen
+bomcl  *=*+2  ;* bomb colour
+bombon *=*+1  ;* bomb on ?
+bombgo *=*+1  ;* go for it basic !
+bready *=*+1  ;* bomb recharged ?
+chtime *=*+1  ;* charge time
+;
+;
+ax     *=*+1  ;* pos
+ay     *=*+1  ;* pos
+bx     *=*+1  ;* pos
+by     *=*+1  ;* pos
+cx     *=*+1  ;* pos
+cy     *=*+1  ;* pos
+dx     *=*+1  ;* pos
+dy     *=*+1  ;* pos
+;
+stopa  *=*+1  ;* stop direction
+stopb  *=*+1  ;* stop direction
+stopc  *=*+1  ;* stop direction
+stopd  *=*+1  ;* stop direction
+;
+bomx   *=*+1  ;* tl bomb co-ord
+xbomb  *=*+1  ;* x explosion size
+bomy   *=*+1  ;* tl bomb co-ord
+ybomb  *=*+1  ;* y explosion size
+bomcol *=*+1  ;* explosion colour
+bmbcol *=*+1  ;* bomb colour
+;
+numb   *=*+1  ;* high print
+;
+jigx   *=*+1  ;* edit jigsaw x
+jigy   *=*+1  ;* edit jigsaw y
+copyl  *=*+2  ;* copy address
+copych *=*+1  ;* copy char #
+nocorr *=*+1  ;* # in correct pos.
+jigno  *=*+1  ;* # jigsaw piece
+;
+delly  *=*+1  ;* time delay pass
+;
+compx  *=*+1  ;* man x pos
+compy  *=*+1  ;* man y pos
+swap   *=*+1  ;* char to swap
+;
+brkcnt *=*+1  ;* brik ani count
+keepon *=*+1  ;* moving ?
+mancnt *=*+1  ;* man animation
+gloptm *=*+1  ;* man tempo
+toggle *=*+1  ;* flag
+antfag *=*+1  ;* flag
+;
+deftem *=*+1  ;* alien animation
+alycnt *=*+1  ;* alien tempo
+moron  *=*+1  ;* count
+;
+dead   *=*+1  ;* dead flag
+stpman *=*+1  ;* stop man ani.
+aliens *=*+1  ;* alien number
+duck   *=*+1  ;* new alien def.?
+title  *=*+1  ;* on title page ?
+savdir *=*+1  ;* dir saved
+manl   *=*+2  ;* man pos
+dedbmb *=*+2  ;* died by bomb ?
+;
+scradd *=*+1  ;* score to add
+;
+hispnt *=*+1  ;* high thingie
+positn *=*+1  ;* pos in table
+incnt  *=*+1  ;* some counter
+letcnt *=*+1  ;* letter counter
+bordy  *=*+1  ;* y pos
+;
+notokl *=*+1  ;* # aliens to get
+nokild *=*+1  ;* number killed
+prcol  *=*+1  ;* print colour
+cly    *=*+1  ;* y pos
+menatw *=*+1  ;* format flag
+wall   *=*+1  ;* save
+;
+datax  *=*+1  ;* move x pos
+datay  *=*+1  ;* move y pos
+alkill *=*+1  ;* number to kill
+cleard *=*+1  ;* done this room?
+;
+ar     *=*+2  ;* alien rub out
+bonus  *=*+1  ;* bonus ?
+dosfx  *=*+1  ;* do cls snd ?
+;
+almvet *=*+1  ;*
+kilhex *=*+1  ;*
+kildec *=*+1  ;*
+;
+sikbuf *=*+6  ;* score buffer
+;
+ted    *=*+1
+;
+;
+;
+;
+;
+;
+;
+;
+.end

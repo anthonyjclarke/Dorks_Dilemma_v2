@@ -1,0 +1,69 @@
+; >s:message-stuff
+; put "message-stuff"
+;
+messve
+;
+lda messx
+sec
+sbc #1
+;
+tay
+;
+and #7
+sta messx
+;
+tya
+;
+and #8
+bne meshil ;* need block scroll
+;
+rts
+;
+meshil
+;
+ldx #0
+;
+msl1
+;
+lda $0fc1-$800,x
+sta $0fc0-$800,x
+;
+inx
+cpx #39
+bne msl1
+;
+; put next letter on
+;
+dpinc mesl
+;
+rupert
+;
+ldy #0
+lda (mesl),y
+;
+cmp #$ff
+bne ntmsed
+;
+lda #<messt
+sta mesl
+;
+lda #>messt
+sta mesl+1
+;
+bne rupert
+;
+ntmsed
+;
+and #$3f
+;
+sta $fc0+39-$800
+;
+rts
+;
+;
+;
+;
+;
+;
+;
+.end

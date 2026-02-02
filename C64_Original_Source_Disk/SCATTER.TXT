@@ -1,0 +1,108 @@
+; >s:scatter
+; put "scatter"
+;
+; the mega code to scatter the
+; jigsaw pieces into the rooms
+; and display the rooms quickly
+; and the pieces disappearing.
+;
+scater
+;
+jsr prjig
+;
+; print complete jigsaw
+;
+lda #1
+sta delly  ;* delay
+;
+lda #0
+sta screen ;* 0-24
+;
+scat1
+;
+jsr radar  ;* display pos
+;
+jsr decode ;* screen decrunch
+jsr fadein ;* put it on
+;
+jsr prpice ;* print jigsaw piece
+;
+ldx #$40
+jsr delay+2
+;
+jsr getrid ;* get rid of that
+;
+jsr coljig
+;
+bit jfire
+bmi hunck
+;
+; fire to escape
+;
+ldx #$10
+jsr delay+2
+;
+inc screen
+lda screen
+cmp #25
+bne scat1
+;
+rts
+;
+hunck
+;
+; carry on with no time delay
+;
+nopal
+;
+jsr radar
+jsr getrid
+;
+ldx #$20
+jsr delay+2
+;
+jsr coljig
+;
+inc screen
+lda screen
+cmp #25
+bne nopal
+;
+rts
+;
+;--------------------------------
+;
+getrid
+;
+ldx screen
+lda jignum,x
+clc
+adc #215
+sta copy
+;
+ldx #24
+;
+scat2
+;
+ldy rady,x
+lda $e02-$800,y
+;
+cmp copy
+bne ntscat
+;
+lda #27
+sta $e02-$800,y
+;
+ntscat
+;
+dex
+bpl scat2
+;
+; jsr coljig
+;
+rts
+;
+;
+;
+;
+.end

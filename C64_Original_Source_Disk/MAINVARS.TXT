@@ -1,0 +1,54 @@
+; >s:main-vars
+; put "main-vars"
+;
+; main system variables that
+; do not change
+;
+;
+border = $d020
+backgr = $d021
+;
+irqreg = $d019
+irqmsk = $d01a
+rastlo = $d012
+;
+prta   = $dc00
+prtb   = $dc01
+ddrpta = $dc02
+ddrptb = $dc03
+;
+timera = $dc0e
+;
+multi1 = $d022
+multi2 = $d023
+;
+;
+;
+;
+vicmem = $d018
+vicr1  = $d011
+vicr2  = $d016
+;
+vic    = $d000
+;
+sptmt1 = vic+$25
+sptmt2 = vic+$26
+;
+sptena = vic+$15
+sptmlt = vic+$1c
+sptxsz = vic+$1d
+sptysz = vic+$17
+;
+sou1lo = $d400
+sou1hi = $d401
+sou2lo = $d408
+sou2hi = $d409
+vol    = $d418
+;
+scdata = $1000
+alibas = $5000  ;* alien data
+;
+;
+;
+;
+.end

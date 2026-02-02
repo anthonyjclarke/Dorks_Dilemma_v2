@@ -1,0 +1,327 @@
+; >s:filler-bomb
+; put "filler-bomb
+;
+; do the bomb fill stuff
+;
+filbmb
+;
+ldx bomx
+stx ax
+stx cx
+;
+inx
+stx bx
+stx dx
+;
+ldy bomy
+sty ay
+sty by
+;
+iny
+sty cy
+sty dy
+;
+; 4 corner addresses sussed.
+;
+lda rnd+1
+and #3
+clc
+adc #4
+;
+; random diameter of bomb 4-7
+;
+sta ybomb
+;
+lda #0
+sta stopa
+sta stopb
+sta stopc
+sta stopd
+;
+fill1
+;
+lda stopa
+bne startb ;* a already finished
+;
+lda #$ff
+sta xbomb
+;
+ldx ax
+;
+fila
+;
+ldy ay
+jsr chkbmb
+;
+bcs stfila ;* exit loop
+;
+dex
+inc xbomb
+lda xbomb
+cmp ybomb
+;
+bne fila
+;
+stfila
+;
+lda xbomb
+cmp #$ff
+bne startb
+;
+lda #1
+sta stopa ;* a hit it
+;
+startb
+;
+; start next bit
+;
+lda stopb  ;* have we stopped ?
+bne startc
+;
+lda #$ff
+sta xbomb
+;
+ldx bx
+;
+filb
+;
+ldy by
+jsr chkbmb
+;
+bcs stfilb ;* bit the dust
+;
+inx
+inc xbomb
+lda xbomb
+cmp ybomb
+;
+bne filb
+;
+stfilb
+;
+lda xbomb
+cmp #$ff
+bne startc
+;
+lda #1
+sta stopb
+;
+startc
+;
+lda stopc
+bne startd
+;
+lda #$ff
+sta xbomb
+;
+ldx cx
+;
+filc
+;
+ldy cy
+;
+jsr chkbmb
+;
+bcs stfilc ;* stop it
+;
+dex
+inc xbomb
+lda xbomb
+cmp ybomb
+;
+bne filc
+;
+stfilc
+;
+lda xbomb
+cmp #$ff
+bne startd
+;
+lda #1
+sta stopc
+;
+startd
+;
+lda stopd
+bne fillex ;* exit
+;
+lda #$ff
+sta xbomb
+;
+ldx dx
+;
+fild
+;
+ldy dy
+;
+jsr chkbmb
+;
+bcs stfild ;* get out
+;
+inx
+inc xbomb
+lda xbomb
+cmp ybomb
+;
+bne fild
+;
+stfild
+;
+lda xbomb
+cmp #$ff
+bne fillex
+;
+lda #1
+sta stopd
+;
+fillex
+;
+dec ay
+dec by
+inc cy
+inc dy
+;
+ldx #$10
+jsr delay+2
+;
+; looks better with a delay
+;
+dec ybomb
+bmi filout
+;
+jmp fill1
+;
+filout
+;
+ldx #0
+jsr delay+2
+;
+;
+jsr manded    ;* man hit ?
+;
+jsr alihit    ;* any aliens hit
+;
+; jsr (check aliens hit)
+; jsr (man hit)
+;
+jsr clexp ;* clear explosion
+;
+lda dosfx ;* do cls screen sfx
+beq jhuys
+;
+jsr clssnd ;* sound
+;
+jhuys
+;
+lda #0
+sta dosfx
+;
+rts
+;
+;-----------------------------
+;
+chkbmb
+;
+txa
+pha
+;
+; check if co-ord out of range
+;
+cpx #0
+bcc outran ;* out of range
+cpx #31
+bcs outran ;*  "   "   "
+;
+cpy #0
+bcc outran ;*  "   "   "
+cpy #23
+bcs outran ;*  "   "   "
+;
+lda #1
+sta bomcol
+;
+jsr xy
+;
+ldy #0
+lda (sl),y
+;
+cmp #197
+bcc bmbok
+;
+cmp #209
+bcs bmbok
+;
+outran
+;
+pla
+tax
+;
+sec ; c=1 if not ok
+;
+rts
+;
+bmbok
+;
+lda #248
+sta (sl),y
+;
+lda bomcol  ;* colour
+sta (cl),y
+;
+pla
+tax
+;
+clc
+;
+rts
+;
+;------------------------------
+;
+clexp
+;
+; do a tidy up of the bits !
+;
+lda #<$429
+sta sl
+lda #>$429
+sta sl+1
+;
+ldx #21
+;
+exclr1
+;
+ldy #30
+;
+exclr2
+;
+lda (sl),y
+cmp #248    ;* bomb char ?
+;
+bne nexp
+;
+lda #196
+sta (sl),y
+;
+nexp
+;
+dey
+bpl exclr2
+;
+lda sl
+clc
+adc #40
+sta sl
+;
+lda sl+1
+adc #0
+sta sl+1
+;
+dex
+bpl exclr1
+;
+rts
+;
+;
+;
+;
+.end

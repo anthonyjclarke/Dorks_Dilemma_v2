@@ -1,0 +1,301 @@
+; >s:alien-chek/print
+; put "alien-chek/print"
+;
+; print and check the aliens
+;
+chkalx
+;
+; check in x axis
+;
+stx chekx
+sty cheky
+;
+jsr xy
+;
+ldy #0
+lda (sl),y
+;
+cmp #196
+bne nomve ;* cant move
+;
+ldy #40
+lda (sl),y
+;
+cmp #196
+bne nomve ;* cant move
+beq canmv
+;
+chkaly    ;* check y
+;
+stx chekx
+sty cheky
+;
+jsr xy
+;
+ldy #0
+lda (sl),y
+;
+cmp #196
+bne nomve ;* cant move
+;
+iny
+lda (sl),y
+;
+cmp #196
+bne nomve ;* cant.
+;
+canmv
+;
+; we can go for it.!
+;
+lda #1
+sta move
+;
+rts
+;
+nomve
+;
+lda #0
+sta move
+;
+rts
+;
+;------------------------------
+;
+prnals
+;
+; print & rub aliens
+;
+lda prtals
+bne doit
+;
+rts
+;
+doit
+;
+lda #3       ;* print them all
+sta alicnt
+;
+alilop
+;
+lda alicnt
+asl a
+tax
+;
+stx point        ;* save pointer
+;
+lda irqrub,x
+sta al
+;
+lda irqrub+1,x
+sta al+1
+;
+cmp #$ff    ;* was it dead ?
+beq misor
+;
+ldx #3
+;
+alilp1
+;
+lda #196
+ldy yval2,x
+;
+sta (al),y
+;
+dex
+bpl alilp1
+;
+ldx point      ;* get pointer
+;
+lda irqprt,x
+sta al
+sta cl
+;
+lda irqprt+1,x
+sta al+1
+;
+clc
+adc #$d4
+sta cl+1
+;
+; colour
+;
+ldx #3
+;
+lda #212
+sta char
+;
+alilp2
+;
+ldy yval2,x
+lda char
+;
+sta (al),y
+;
+lda alicol
+sta (cl),y ;* colour
+;
+dec char
+;
+dex
+bpl alilp2
+;
+misor
+;
+dec alicnt
+bpl alilop
+;
+rts
+;
+;******************************
+;
+alihit
+;
+; check if any aliens were killed
+; by the explosion.
+;
+lda #3
+sta alicnt
+;
+lda #0
+sta bonus
+;
+cjpl1
+;
+lda alicnt
+asl a
+tax
+stx point    ;* save pointer
+;
+lda irqprt,x
+sta al
+lda irqrub,x
+sta ar
+;
+lda irqrub+1,x
+sta ar+1
+lda irqprt+1,x
+sta al+1
+;
+cmp #$ff
+beq cjpl3    ;* might be dead
+;
+; got address
+;
+ldx #3
+;
+cjpl2
+;
+ldy yval2,x
+lda (al),y
+;
+cmp #248     ;* bomb char
+beq aligt    ;* got the bugger !
+;
+dex
+bpl cjpl2
+bmi cjpl3
+;
+aligt
+;
+ldx #3
+;
+cjpl4
+;
+lda #196
+ldy yval2,x
+sta (al),y
+;
+sta (ar),y
+;
+dex
+bpl cjpl4
+;
+; rub it out straight away
+;
+ldx point
+;
+lda #$ff
+sta irqprt,x
+sta irqrub,x
+sta irqprt+1,x
+sta irqrub+1,x
+;
+sta alipos,x
+sta alipos+1,x
+;
+; kill it from table
+;
+inc bonus
+;
+ldx alicnt
+;
+lda rnd+1
+and #15
+clc
+adc #15
+;
+; random regeneration time 5-20
+;
+sta alitim,x
+;
+; time until alien regenerates
+; (individual timers for each)
+;
+lda cleard
+beq juytt
+;
+lda #1
+ldy #4
+jsr score+2
+;
+; only score 10 if you have
+; cleared this screen
+;
+jmp hewq
+;
+juytt
+;
+lda #5
+jsr score
+;
+lda #2
+ldy #4
+jsr score+2
+;
+; aliens = 25 points
+;
+hewq
+;
+lda bonus
+cmp #4
+bne nobons
+;
+; he cleared all the aliens in
+; one go - wooowww
+;
+lda #1
+ldy #3
+jsr score+2
+;
+; bonus 100 points
+;
+nobons
+;
+jsr killed  ;* update no. killed
+;
+cjpl3
+;
+dec alicnt
+bmi cjpl5
+;
+jmp cjpl1
+;
+cjpl5
+;
+rts
+;
+;
+;
+;
+.end

@@ -1,0 +1,68 @@
+; >s:score-routines
+; put "score-routines"
+;
+;
+scorep=$421+120
+;
+; called with acc holding val
+; to add , why do i have to tell
+; you this you've used it in so
+; many games you dick head
+;
+score
+;
+ldy #5       ;* lsb digit
+;
+; second entry point
+;
+addlop
+;
+sta scradd
+;
+lda scorep,y
+cmp #32
+bne ntort
+;
+lda #$30
+;
+ntort
+;
+clc
+adc scradd
+cmp #$3a
+bmi scorel
+;
+sec
+sbc #$a
+sta scorep,y
+;
+lda #1
+dey
+bpl addlop
+;
+scorel
+;
+sta scorep,y
+;
+lda scorep+2    ;* thousands
+and #15         ;* 0 - 15
+cmp xtra
+;
+beq xargon
+;
+sta xtra
+;
+lda lives
+cmp #9
+;
+beq xargon
+;
+inc lives
+inc $400+200+35
+;
+xargon
+;
+rts
+;
+;
+.end

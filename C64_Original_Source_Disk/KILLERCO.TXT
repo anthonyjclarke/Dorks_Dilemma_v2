@@ -1,0 +1,181 @@
+; >s:killer-code
+; put "killer-code"
+;
+; the logic related to the
+; killing of the nasties
+;
+; notokl = no of aliens killed
+; (gets zeroed at exit of room)
+;
+initkl
+;
+; initialise # to kill
+;
+lda #0
+sta nokild
+;
+lda kilhex
+sta alkill   ;* number to kill
+;
+lda cleard
+bne killed   ;* no effect
+;
+sed
+;
+lda kildec    ;* num to kill
+sta notokl
+;
+cld
+;
+; now fall through and print it
+;
+jmp ohshit
+;
+;-------------------------------
+;
+; this routine is called under irq
+; to add one to the number killed.
+;
+; if the number killed=10
+; then the routine hands over to
+; basic loop
+;
+killed
+;
+lda cleard   ;* cleared this one
+beq kilop
+;
+lda #$30
+sta $d3b-$800
+sta $d3c-$800
+;
+; you don't have to clear any
+; if you've completed this room
+; do you - gonk.
+;
+rts
+;
+kilop
+;
+inc nokild
+;
+ohshit      ;* !!
+;
+sed
+;
+lda notokl
+;
+sec
+sbc #1
+;
+sta notokl
+;
+cld
+;
+; lets update the count
+;
+pha
+;
+lsr a
+lsr a
+lsr a
+lsr a
+;
+ora #$30
+sta $d3b-$800
+;
+pla
+;
+and #15
+ora #$30
+sta $d3c-$800
+;
+lda notokl
+beq kilall   ;* all gone
+;
+rts
+;
+;---------------
+;
+kilall
+;
+ldx screen
+lda #1
+sta gotbit,x
+;
+; we've cleared it !!!  wwooooo!
+;
+sta cleard
+sta dosfx
+;
+jsr transf
+;
+; copy jig in the middle to
+; the one on the right
+;
+rts
+;
+;--------------
+;
+clssnd
+;
+lda sndflg
+beq yogup
+;
+lda #%00111111
+sta vol
+;
+yogup
+;
+lda #3
+sta work
+;
+lda #0
+sta work+1
+;
+gaste1
+;
+ldx #0
+;
+gasree
+;
+inc border
+;
+dex
+bne gasree
+;
+lda work+1
+sta sou2lo
+;
+eor #$ff
+sta sou1lo
+;
+lda work
+and #3
+sta sou2hi
+;
+eor #$ff
+and #3
+;
+ora sou1hi
+sta sou1hi
+;
+dec work+1
+bne gaste1
+;
+dec work
+bne gaste1
+;
+lda #0
+sta vol
+;
+lda #11
+sta border
+;
+rts
+;
+;
+;
+;
+;
+.end

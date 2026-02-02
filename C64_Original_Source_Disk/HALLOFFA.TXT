@@ -1,0 +1,16 @@
+; >s:hall-of-fame
+; put "hall-of-fame"
+;
+;
+histbl
+;
+.byte '000100          '
+.byte '000100  micro   '
+.byte '000100  projects'
+.byte '000100  limited '
+.byte '000100          '
+.byte '****'
+;
+;
+;
+.end

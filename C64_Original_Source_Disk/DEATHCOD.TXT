@@ -1,0 +1,347 @@
+; >s:death-code
+; put "death-code"
+;
+;
+death
+;
+; called whwn th bod has moved
+; so we must check if he's hit
+; an alien by peeking his behind
+;
+ldx #3
+;
+chkdth
+;
+lda behind,x
+cmp #209
+bcc dodok
+;
+cmp #213
+bcs dodok
+;
+lda #1
+sta dead  ;* he's dead
+;
+dodok
+;
+dex
+bpl chkdth
+;
+rts
+;
+;-------------------------------
+;
+deadck
+;
+; called by the basic loop
+;
+lda dead
+bne runty
+;
+rts
+;
+runty
+;
+ldx #1
+stx stop
+stx stpman  ;* stop man animation
+;
+dex
+stx dead
+;
+jsr doit
+;
+; (calls a label in the print
+; aliens subroutine to put all
+; the aliens on the screen.)
+;
+; first lets replace the man
+; with our own char ie
+;
+; 33 34
+; 34 36
+;
+; ( this format makes scrolling
+; easier.)
+;
+ldx #7
+;
+clope
+;
+lda $20e0,x    ;* tl char
+sta $2108,x
+;
+lda $20f0,x    ;* bl char
+sta $2110,x
+;
+lda $20e8,x    ;* tr char
+sta $2118,x
+;
+lda $20f8,x    ;* br char
+sta $2120,x
+;
+dex
+bpl clope
+;
+lda dedbmb ;* died by bomb ?
+beq nthyu
+;
+lda manl
+sta sl
+sta cl
+;
+lda manl+1
+sta sl+1
+clc
+adc #$d4
+sta cl+1
+;
+; if he died by the explosion
+; the use tl co-ordinates
+;
+jmp steve
+;
+nthyu
+;
+ldx manx
+ldy many
+;
+lda dir
+and #3
+beq chaka
+;
+inx
+;
+chaka
+;
+lda dir
+and #4
+beq khan
+;
+iny
+;
+khan
+;
+jsr xy
+;
+steve
+;
+lda sndflg
+beq stew1
+;
+lda #$2f
+sta vol  ;* chan #2
+;
+stew1
+;
+lda #2
+sta sou2hi
+;
+lda sl
+pha
+sec
+sbc #40
+sta sl
+;
+lda sl+1
+pha
+sbc #0
+sta sl+1
+;
+jsr bugrub ;* rub him out
+;
+pla
+sta sl+1
+pla
+sta sl
+;
+ldx #3
+lda #36
+sta char
+;
+clonet
+;
+ldy dedy,x
+lda char
+sta (sl),y
+;
+lda #$7f
+sta (cl),y  ;* yellow
+;
+dec char
+dex
+bpl clonet
+;
+; our char on - i hope
+;
+ldy #15
+;
+anrt
+;
+ldx #14
+;
+closcr
+;
+lda $2108,x
+sta $2109,x
+;
+lda $2118,x
+sta $2119,x
+;
+dex
+bpl closcr
+;
+tya
+pha
+;
+ldx #$20
+jsr delay+2
+;
+pla
+tay
+;
+asl a
+asl a
+asl a
+asl a
+sta sou2lo
+;
+lda #0
+sta $2108
+sta $2118
+;
+dey
+bpl anrt
+;
+ldx #0
+;
+scrups
+;
+; scroll up the cross
+;
+lda crossl,x
+sta $2117
+;
+lda crossr,x
+sta $2127
+;
+ldy #0
+;
+meatlf
+;
+lda $2109,y
+sta $2108,y
+;
+lda $2119,y
+sta $2118,y
+;
+iny
+cpy #15
+bne meatlf
+;
+txa
+pha
+;
+ldx #$30
+jsr delay+2
+;
+pla
+tax
+;
+lda rnd+2
+sta sou2lo
+;
+inx
+cpx #15
+bne scrups
+;
+lda #0
+sta vol
+;
+tax
+tay      ;* = 0
+;
+wrath
+;
+inc backgr
+;
+dey
+bne wrath
+;
+dex
+bne wrath
+;
+lda #11
+sta backgr
+;
+ldx #$00
+jsr delay+2
+jsr delay+2
+jsr delay+2
+;
+; long delay
+;
+lda #0
+sta stpman ;* animations off again
+sta dedbmb ;*
+;
+dec $4eb   ;* screen lives
+;
+dec lives
+bne more   ;* still some lives
+;
+jmp gmeovr ;* all over
+;
+more
+;
+lda savex
+sta manx
+lda savey
+sta many
+;
+lda savdir
+sta dir    ;* old dir
+;
+lda #1
+sta duck   ;* same alien type
+;
+jsr jmpbak ;* start screen again
+;
+lda #0
+sta duck
+;
+jmp loop   ;* back to game
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;----------------------
+;
+dedy .byte 0,40,1,41
+;
+;
+crossl
+;
+; char data for cross left
+;
+.byte $05,$07,$57,$7f,$7f,$6b,$57,$07
+.byte $07,$07,$07,$07,$15,$5a,$6a,$55
+;
+crossr
+;
+; for right
+;
+.byte $50,$d0,$d5,$fd,$fd,$e9,$d5,$d0
+.byte $d0,$d0,$d0,$d0,$54,$f5,$bd,$55
+;
+;
+;
+;
+;
+.end

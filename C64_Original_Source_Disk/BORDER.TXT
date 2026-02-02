@@ -1,0 +1,84 @@
+; >s:border
+; put "border"
+;
+prbder
+;
+; print the border chars on
+; the window on the right.
+;
+;
+;
+ldx #6
+;
+prb1
+;
+lda #203
+sta $c20-$800,x     ;* glop char
+sta $fb8-$800,x     ;* glop char
+sta $db0-$800,x     ;* glop char
+sta $ec8-$800,x     ;* glop char
+;
+lda #$71
+sta $d820,x
+sta $dbb8,x
+;
+dex
+bne prb1
+;
+; now the sides
+;
+lda #22
+sta ty
+;
+prb2
+;
+ldx #32
+ldy ty
+;
+jsr xy
+;
+ldy #0
+lda #204
+sta (sl),y
+;
+lda #$71
+sta (cl),y
+;
+ldy #7
+lda #204
+sta (sl),y
+;
+lda #$71
+sta (cl),y
+;
+dec ty
+bne prb2
+;
+ldx #205
+stx $c20-$800
+;
+inx
+stx $c27-$800
+;
+inx
+stx $f98+32-$800
+;
+inx
+stx $f98+31+8-$800
+;
+; corner chars on
+;
+ldx #249
+stx $db0-$800
+stx $ec8-$800
+;
+inx
+stx $db7-$800
+stx $ecf-$800
+;
+; mid bits
+;
+rts
+;
+;
+.end

@@ -1,0 +1,102 @@
+; >s:variety
+; put "variety"
+;
+;
+getdef
+;
+; sets up chars for alien on
+; this sheet.
+;
+; both chars are left in the
+; screen buffer
+;
+; char#1 alibuf
+; char#2 alibuf+32
+; char#3 alibuf+64
+; char#4 alibuf+96
+;
+; random numbers continually
+; generated form raster
+;
+lda duck   ;* same aliens as b4?
+beq outduk ;* no
+;
+lda aliens ;* last type
+jmp quazi
+;
+outduk
+;
+lda ted
+and #3
+pha
+;
+jsr random
+;
+pla
+tax
+;
+lda rnd,x
+;
+and #15    ;* sixteen types
+sta aliens ;* alien number
+;
+quazi
+;
+jsr random
+;
+lda rnd+1
+and #7
+beq quazi  ;* no blacks !
+;
+cmp #6
+beq quazi  ;* no blues !
+;
+ora #8
+sta alicol ;* random colour
+;
+lda aliens
+pha
+and #1
+clc
+ror a
+ror a
+sta work
+;
+; acc = 0 or $80
+;
+pla
+lsr a
+sta work+1
+;
+; work,work+1 = alien# * 128
+;
+lda work
+clc
+adc #<alibas
+sta work
+;
+lda work+1
+adc #>alibas
+sta work+1
+;
+ldy #127
+;
+defer
+;
+lda (work),y  ;* char data
+sta alibuf,y
+;
+dey
+bpl defer
+;
+lda #1
+sta deftem   ;* tempo
+;
+rts
+;
+;
+;
+;
+;
+;
+.end

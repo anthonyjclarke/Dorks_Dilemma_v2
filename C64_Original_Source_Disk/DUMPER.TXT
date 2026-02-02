@@ -1,0 +1,152 @@
+; >s:dumper
+; put "dumper"
+;
+; copies the 'scrbuf' to the
+; screen - gloppily.
+;
+fadein
+;
+lda multi1
+pha
+lda multi2
+pha
+;
+jsr clswin
+;
+; clear window
+;
+lda sndflg
+beq nsnd1
+;
+lda #%00101111 ;* chan#2
+sta vol
+;
+nsnd1
+;
+lda #3
+sta count
+;
+; 4 chars to copy across
+;
+cop1
+;
+jsr random
+;
+lda rnd+1
+and #3
+sta sou2hi
+;
+; random hi-bit start
+;
+lda rnd+2
+and #$80
+sta sou2lo
+;
+; lo-bit start at 0 or 128
+;
+lda sou2lo
+clc
+adc #16
+sta sou2lo
+;
+lda sou2hi
+adc #0
+sta sou2hi
+;
+lda #<$400
+sta ol
+lda #>$400
+sta ol+1
+;
+lda #<scrbuf
+sta dl
+lda #>scrbuf
+sta dl+1
+;
+ldx count
+lda compar,x ;* copy table
+sta copy
+;
+lda coltbl,x ;* colour of blocks
+sta colour
+;
+ldx #23
+;
+cop2
+;
+ldy #31
+;
+cop3
+;
+lda (dl),y ;* get buffer copy
+;
+cmp copy   ;* the one to copy ?
+bne wrong  ;* not this one.
+;
+sta (ol),y ;* onto screen
+;
+lda ol
+sta cl
+;
+lda ol+1
+clc
+adc #$d4
+sta cl+1
+;
+lda colour
+sta (cl),y ;* put a colour on
+;
+wrong
+;
+dey
+bpl cop3  ;* finish line
+;
+lda ol
+clc
+adc #40
+sta ol
+;
+lda ol+1
+adc #0
+sta ol+1
+;
+lda dl
+clc
+adc #40
+sta dl
+;
+lda dl+1
+adc #0
+sta dl+1
+;
+dex
+bpl cop2  ;* all the lines
+;
+ldx delly ;* set up before called
+jsr delay+2
+;
+dec count ;* 4 chars to copy
+bmi copo1
+;
+jmp cop1
+;
+copo1
+;
+lda #0
+sta vol   ;* sound off
+;
+pla
+sta multi2
+;
+pla
+sta multi1
+;
+rts
+;
+compar
+;
+.byte 199,198,200,197
+;
+coltbl .byte $0f,$0a,$0d,$0c
+;
+.end

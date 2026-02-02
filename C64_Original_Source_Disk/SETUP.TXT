@@ -1,0 +1,44 @@
+; >s:setup
+; put "setup"
+;
+;*****************************
+;
+; initialise all pointers etc.
+;
+;*****************************
+;
+setup
+;
+lda #24
+sta vicmem     ;* chars at $2000
+;
+ldx #3
+;
+rnl
+;
+lda $dc00,x   ;* timers as rnd #
+sta rnd,x
+;
+dex
+bpl rnl
+;
+;  *seed
+;
+lda #$b      ;* grey
+sta backgr
+sta border
+;
+lda #$00
+sta multi1
+;
+lda #$46
+sta multi2
+;
+;
+;
+;
+rts
+;
+;
+;
+.end

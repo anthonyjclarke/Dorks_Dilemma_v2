@@ -1,0 +1,1 @@
+; PUT "MACROS";;;.MAC DPINC;INC ?1BNE ?2;INC ?1+1;?2;.MND;;;.MAC DPDEC;LDA ?1SECSBC #1STA ?1;LDA ?1+1SBC #0STA ?1+1;.MND;;;.END
